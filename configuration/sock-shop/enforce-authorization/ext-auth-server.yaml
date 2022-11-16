@@ -1,0 +1,13 @@
+apiVersion: admin.gloo.solo.io/v2
+kind: ExtAuthServer
+metadata:
+  name: ext-auth-server
+  namespace: apps
+spec:
+  destinationServer:
+    ref:
+      name: ext-auth-service
+      namespace: gloo-gateway-addons
+      cluster: ${CLUSTER_NAME}
+    port:
+      name: grpc

@@ -1,0 +1,27 @@
+apiVersion: networking.gloo.solo.io/v2
+kind: RouteTable
+metadata:
+  name: ingress-rt
+  namespace: apps
+spec:
+  hosts:
+    - 'apps.${DOMAIN_NAME}'
+  virtualGateways:
+    - name: ingress-gw
+      namespace: apps
+  workloadSelectors: []
+  http:
+    - name: front-end
+      labels:
+        enableAuthZ: "true"
+        enableClaimValidation: "true"
+      matchers:
+        - uri:
+            prefix: /
+      forwardTo:
+        destinations:
+          - ref:
+              name: front-end
+              namespace: apps
+            port:
+              number: 80

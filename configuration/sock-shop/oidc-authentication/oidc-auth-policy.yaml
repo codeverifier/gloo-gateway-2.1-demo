@@ -1,0 +1,33 @@
+apiVersion: security.policy.gloo.solo.io/v2
+kind: ExtAuthPolicy
+metadata:
+  name: sock-shop-oidc-auth-policy
+  namespace: apps
+spec:
+  applyToRoutes:
+    - route:
+        labels:
+          enableExtAuth: "true"
+  config:
+    server:
+      name: ext-auth-server
+      namespace: apps
+      cluster: ${CLUSTER_NAME}
+    glooAuth:
+      configs:
+        - oauth2:
+            oidcAuthorizationCode:
+              appUrl: "https://apps.${DOMAIN_NAME}"
+              callbackPath: /callback
+              clientId: "${CLIENT_ID}"
+              clientSecretRef:
+                name: sock-shop-oidc-client-secret
+                namespace: apps
+              issuerUrl: "${KEYCLOAK_URL}/realms/master/"
+              scopes:
+                - email
+              session:
+                cookieOptions:
+                  notSecure: true
+              headers:
+                idTokenHeader: jwt

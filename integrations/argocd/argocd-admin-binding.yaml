@@ -1,0 +1,15 @@
+apiVersion: rbac.enterprise.mesh.gloo.solo.io/v1
+kind: RoleBinding
+metadata:
+  name: argo-admin-role-binding
+  namespace: gloo-gateway
+  labels:
+    app: gloo-gateway
+spec:
+  roleRef:
+    name: admin-role
+    namespace: gloo-gateway
+  subjects:
+  - kind: ServiceAccount
+    name: argocd-application-controller
+    namespace: argocd

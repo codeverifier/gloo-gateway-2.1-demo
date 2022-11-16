@@ -1,0 +1,19 @@
+apiVersion: security.policy.gloo.solo.io/v2
+kind: WAFPolicy
+metadata:
+  name: waf-policy
+  namespace: apps
+spec:
+  applyToRoutes:
+    - route:
+        labels:
+          protectApp: "true"
+  config:
+    customInterventionMessage: "Unable to perform this operation, please go away !"
+    customRuleSets:
+      - ruleStr: |2
+          SecRuleEngine On
+          SecRule REQUEST_METHOD "!@rx ^(?:GET|HEAD|POST|OPTIONS)$" \
+            "phase:1,t:none,deny,id:1,msg:'No deletion allowed allowed',logdata:%{REQUEST_METHOD}"
+    disableCoreRuleSet: true
+    priority: 0

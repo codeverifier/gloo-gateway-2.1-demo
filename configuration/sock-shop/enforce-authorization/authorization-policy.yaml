@@ -1,0 +1,33 @@
+apiVersion: security.policy.gloo.solo.io/v2
+kind: JWTPolicy
+metadata:
+  name: authz-policy
+  namespace: apps
+spec:
+  applyToRoutes:
+    - route:
+        labels:
+          enableAuthZ: "true"
+  config:
+    phase:
+      preAuthz: {}
+    providers:
+      jwtprovider:
+        claimsToHeaders:
+          - append: true
+            claim: org
+            header: x-organization
+        issuer: "https://localhost"
+        keepToken: true
+        local:
+          secretRef:
+            objectRef:
+              name: local-jwks-verification
+              namespace: apps
+              cluster: ${CLUSTER_NAME}
+            key: public_key
+        tokenSource:                    
+          headers:  
+            - name: X-Authorization
+              prefix: 'Bearer '
+    allowMissingOrFailed: true

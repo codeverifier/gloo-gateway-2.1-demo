@@ -1,0 +1,39 @@
+apiVersion: networking.gloo.solo.io/v2
+kind: RouteTable
+metadata:
+  name: sock-shop-routing
+  namespace: apps
+spec:
+  hosts:
+    - 'apps.${DOMAIN_NAME}'
+  virtualGateways:
+    - name: sock-shop-gw
+      namespace: apps
+  http:
+    - name: carts
+      labels:
+        protectApp: "true"
+      matchers:
+        - uri:
+            prefix: /api/carts
+      forwardTo:
+        pathRewrite: /
+        destinations:
+          - ref:
+              name: carts
+              namespace: apps
+            port:
+              number: 80
+    - name: front-end
+      matchers:
+        - uri:
+            prefix: /
+      forwardTo:
+        destinations:
+          - ref:
+              name: front-end
+              namespace: apps
+            port:
+              number: 80
+
+        
