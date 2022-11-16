@@ -10,7 +10,7 @@ Demo of Gloo Gateway on Gloo Platform version `2.1.0` on a single cluster.
   |:----------|:---------------|:-------------|
   | `helm` | latest | `brew install helm` |
   | `istioctl` | `1.15.3` | `asdf install istioctl 1.15.3` |
-  | `meshctl` | `2.1.0` | `curl -sL https://run.solo.io/meshctl/install | GLOO_MESH_VERSION=v2.1.0 sh -` |
+  | `meshctl` | `2.1.0` | `curl -sL https://run.solo.io/meshctl/install \| GLOO_MESH_VERSION=v2.1.0 sh -` |
   | Vault | latest | `brew tap hashicorp/tap && brew install hashicorp/tap/vault` |
   | `cfssl` | latest | `brew install cfssl` |
   | `jq` | latest | `brew install jq` |
