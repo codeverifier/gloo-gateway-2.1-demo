@@ -1,0 +1,24 @@
+apiVersion: networking.gloo.solo.io/v2
+kind: RouteTable
+metadata:
+  name: ingress-rt
+  namespace: apps
+spec:
+  hosts:
+    - 'apps.${DOMAIN_NAME}'
+  virtualGateways:
+    - name: ingress-gw
+      namespace: apps
+  workloadSelectors: []
+  http:
+    - name: tornado
+      matchers:
+        - uri:
+            prefix: /
+      forwardTo:
+        destinations:
+          - ref:
+              name: tornado
+              namespace: apps
+            port:
+              number: 8888

@@ -63,17 +63,39 @@ Deploy all the services (including integrations)
 
 ## Application Demo
 
-### Deployment
+List of applications to demonstrate the gateway features
 
+### Sock Shop
+
+<u>Deployment</u>
+
+Deploy using,
 ```
-./apps/apps-deploy.sh prov
+./apps/apps-deploy.sh prov sockshop
 ```
 
-### Feature Demo
+<u>Testing Features</u>
 
-| Feature   |      Command      |  Notes |
-|:----------|:-------------|:------|
-| Securing Gateway with TLS | `./configuration/sock-shop/secure-gateway.sh prov` | Uses cert manager to generate a LetsEncrypt cert |
-| Web firewall policy | `./configuration/sock-shop/web-firewall-policy.sh prov` | Applies modsec rules to only allow certain HTTP methods |
-| OIDC authentication | `./configuration/sock-shop/oidc-authentication.sh prov` | Secure the application with OIDC |
-| Enforcing authorization | `./configuration/sock-shop/enforce-authorization.sh prov` | Requires a valid JWT and subsequently validates the claim |
+List of features,
+| Feature   |      Command      |  Notes | Testing Steps |
+|:----------|:-------------|:------|:-----------|
+| Securing Gateway with TLS | `./configuration/sock-shop/secure-gateway.sh prov` | Uses cert manager to generate a LetsEncrypt cert | `http https://apps.$DOMAIN_NAME` |
+| Web firewall policy | `./configuration/sock-shop/web-firewall-policy.sh prov` | Applies modsec rules to only allow certain HTTP methods | `http DELETE https://$DOMAIN_NAME/api/carts/carts/1` |
+| OIDC authentication | `./configuration/sock-shop/oidc-authentication.sh prov` | Secure the application with OIDC | Browse to `https://$DOMAIN_NAME` to trigger OIDC |
+| Enforcing authorization | `./configuration/sock-shop/enforce-authorization.sh prov` | Requires a valid JWT and subsequently validates the claim | Use the generated JWT token to run `http https://$DOMAIN_NAME "X-Authorization:Bearer <JWT token>"` |
+
+### Websocket App
+
+<u>Deployment</u>
+
+Deploy using,
+```
+./apps/apps-deploy.sh prov websocket
+```
+
+<u>Testing Features</u>
+
+List of features,
+| Feature   |      Command      |  Notes | Testing |
+|:----------|:-------------|:------|:-----------|
+| Simple websocket dmeo | `./configuration/websocket/websocket-upgrade.sh prov` | Used to access the websocket application | 1. Access `http://apps.$DOMAIN_NAME` on browser<br>2. Execute `http http://apps.$DOMAIN_NAME/api\?id\=1\&value\=100`<br>3. Check values on the browser change |
