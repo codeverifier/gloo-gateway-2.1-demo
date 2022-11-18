@@ -30,4 +30,4 @@ spec:
           headers:  
             - name: X-Authorization
               prefix: 'Bearer '
-    allowMissingOrFailed: true
+    allowMissingOrFailed: false
