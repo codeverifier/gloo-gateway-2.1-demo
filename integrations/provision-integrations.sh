@@ -267,6 +267,7 @@ install_cert_manager() {
             --role roles/dns.admin
         gcloud iam service-accounts keys create $DIR/../_output/dns01-solver_key.json \
             --iam-account cert-manager-dns01-solver@$PROJECT_ID.iam.gserviceaccount.com
+        kubectl --context ${context} create ns cert-manager
         kubectl --context ${context} -n cert-manager create secret generic clouddns-dns01-solver-svc-acct \
             --from-file=key.json=$DIR/../_output/dns01-solver_key.json
     fi

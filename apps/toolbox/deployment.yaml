@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: toolbox
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: toolbox
+  labels:
+    app: toolbox
+    service: toolbox
+spec:
+  ports:
+    - name: http
+      port: 80
+  selector:
+    app: toolbox
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: toolbox
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: toolbox
+  template:
+    metadata:
+      labels:
+        app: toolbox
+    spec:
+      terminationGracePeriodSeconds: 0
+      serviceAccountName: toolbox
+      containers:
+        - name: toolbox
+          image: curlimages/curl
+          command: ["/bin/sleep", "infinity"]
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: secret-volume
+              mountPath: /etc/sleep/tls
+      volumes:
+        - name: secret-volume
+          secret:
+            secretName: toolbox-secret
+            optional: true

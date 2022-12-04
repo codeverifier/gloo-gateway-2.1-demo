@@ -31,9 +31,9 @@ Demo of Gloo Gateway on Gloo Platform version `2.1.0` on a single cluster.
 
   export CLOUD_PROVIDER="gke"
 
-  export CLUSTER_CONTEXT="gke_$(gcloud config get-value project)_${GKE_CLUSTER_REGION}_${CLUSTER_OWNER}-${CLUSTER}"
+  export CLUSTER_CONTEXT="gke_$(gcloud config get-value project)_${GKE_CLUSTER_REGION}_${CLUSTER_OWNER}-${CLUSTER_NAME}"
 
-  export GLOO_GW_VERSION="2.1.0"
+  export GLOO_GW_VERSION="2.1.1"
   export GLOO_GW_HELM_VERSION="v${GLOO_GW_VERSION}"
 
   export ISTIO_VERSION="1.15.3"
@@ -43,7 +43,7 @@ Demo of Gloo Gateway on Gloo Platform version `2.1.0` on a single cluster.
   export REVISION="1-15-3"
 
   export KEYCLOAK_HELM_VERSION="12.1.2" # Version 19.0.3
-  export CERT_MANAGER_VERSION="v1.10.0" # Version 1.10.0
+  export CERT_MANAGER_HELM_VERSION="v1.10.0" # Version 1.10.0
   export EXTERNAL_DNS_HELM_VERSION="1.11.0" # Version 0.12.2
   ```
 
@@ -83,6 +83,7 @@ List of features,
 | Web firewall policy | `./configuration/sock-shop/web-firewall-policy.sh prov` | Applies modsec rules to only allow certain HTTP methods | `http DELETE https://$DOMAIN_NAME/api/carts/carts/1` |
 | OIDC authentication | `./configuration/sock-shop/oidc-authentication.sh prov` | Secure the application with OIDC | Browse to `https://$DOMAIN_NAME` to trigger OIDC |
 | Enforcing authorization | `./configuration/sock-shop/enforce-authorization.sh prov` | Requires a valid JWT and subsequently validates the claim | Use the generated JWT token to run `http https://$DOMAIN_NAME "X-Authorization:Bearer <JWT token>"` |
+| Enable mTLS | `./configuration/sock-shop/enable-mtls.sh prov` | Enabling mTLS on backend applications | `./configuration/sock-shop/enable-mtls.sh test` |
 
 ### Websocket App
 
@@ -98,4 +99,4 @@ Deploy using,
 List of features,
 | Feature   |      Command      |  Notes | Testing |
 |:----------|:-------------|:------|:-----------|
-| Simple websocket dmeo | `./configuration/websocket/websocket-upgrade.sh prov` | Used to access the websocket application | 1. Access `http://apps.$DOMAIN_NAME` on browser<br>2. Execute `http http://apps.$DOMAIN_NAME/api\?id\=1\&value\=100`<br>3. Check values on the browser change |
+| Simple websocket demo | `./configuration/websocket/websocket-upgrade.sh prov` | Used to access the websocket application | 1. Access `http://apps.$DOMAIN_NAME` on browser<br>2. Execute `http http://apps.$DOMAIN_NAME/api\?id\=1\&value\=100`<br>3. Check values on the browser change |
