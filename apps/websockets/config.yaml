@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: blue-green-config
+data:
+  config.js: |
+    window.env = {
+      'APP_HOSTNAME':'_HOSTNAME_', 
+      'APP_CANARY_COLOR':'blue',
+      'APP_SOCKETIO_SERVER_ADDR':'apps.${DOMAIN_NAME}',
+      'APP_SOCKETIO_SERVER_PREFIX':'websocket/blue'
+    }

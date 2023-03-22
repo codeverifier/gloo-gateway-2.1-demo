@@ -1,37 +1,70 @@
-apiVersion: v1
-kind: Service
-metadata:
-  name: tornado
-  labels:
-    app: tornado
-    service: tornado
-spec:
-  ports:
-    - name: http
-      port: 8888
-  selector:
-    app: tornado
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: tornado
+  name: blue-green
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: tornado
-      version: v1
+      component: blue-green
   template:
     metadata:
       labels:
-        app: tornado
-        version: v1
+        component: blue-green
     spec:
+      terminationGracePeriodSeconds: 10
+      initContainers:
+        - name: copy-contents
+          image: kasunt/blue-green-canary-frontend:1.0.0
+          command: ["/bin/sh", "-c"]
+          args:
+            - echo "Copying contents";
+              mkdir -p /contents/html-old-contents;
+              cp -R /usr/share/nginx/html/* /contents/html-old-contents/.;
+              rm -f /contents/html-old-contents/config.js;
+              echo "Done";
+          volumeMounts:
+            - name: complete-config
+              mountPath: "/contents"
+        - name: generate-config
+          image: alpine
+          command: ["/bin/sh", "-c"]
+          args:
+            - echo "Copying and writing to config.js file";
+              mkdir -p /usr/share/nginx/html;
+              cp -f /config/config.js /usr/share/nginx/html/;
+              sed -i "s/_HOSTNAME_/${HOSTNAME}/g" /usr/share/nginx/html/config.js;
+              cp -Rf /usr/share/nginx/html-old-contents/* /usr/share/nginx/html/.;
+              echo "Done";
+          volumeMounts:
+            - name: config
+              mountPath: "/config/config.js"
+              subPath: "config.js"
+            - name: complete-config
+              mountPath: "/usr/share/nginx"
       containers:
-        - name: tornado
-          image: hiroakis/tornado-websocket-example
+        - name: frontend
+          image: kasunt/blue-green-canary-frontend:1.0.0
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 8888
----
+            - containerPort: 3000
+          volumeMounts:
+            - name: complete-config
+              mountPath: "/usr/share/nginx"
+        - name: backend
+          image: kasunt/blue-green-canary-backend:1.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5000
+          env: 
+            - name: SOCKETIO_SERVER_PREFIX
+              value: 'websocket/blue'
+      volumes:
+        - name: config
+          configMap:
+            name: blue-green-config
+            items:
+              - key: "config.js"
+                path: "config.js"
+        - name: complete-config
+          emptyDir: {} 

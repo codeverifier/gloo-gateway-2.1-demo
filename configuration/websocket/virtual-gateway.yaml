@@ -2,7 +2,7 @@ apiVersion: networking.gloo.solo.io/v2
 kind: VirtualGateway
 metadata:
   name: ingress-gw
-  namespace: apps
+  namespace: websocket
 spec:
   workloads:
     - selector:

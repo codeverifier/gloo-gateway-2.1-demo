@@ -97,7 +97,6 @@ install_istio() {
         -n istio-ingress wait deploy/istio-ingressgateway --for condition=Available=True --timeout=90s
 }
 
-
 install_gloo_gateway() {
     print_info "Installing Gloo Gateway"
 

@@ -2,23 +2,46 @@ apiVersion: networking.gloo.solo.io/v2
 kind: RouteTable
 metadata:
   name: ingress-rt
-  namespace: apps
+  namespace: websocket
 spec:
   hosts:
     - 'apps.${DOMAIN_NAME}'
   virtualGateways:
     - name: ingress-gw
-      namespace: apps
+      namespace: websocket
   workloadSelectors: []
   http:
-    - name: tornado
+    - name: blue-green-websocket
+      matchers:
+        - uri:
+            prefix: /websocket/blue
+      forwardTo:
+        destinations:
+          - ref:
+              name: blue-green
+              namespace: websocket
+            port:
+              number: 5000
+    - name: blue-green-backend
+      matchers:
+        - uri:
+            prefix: /backend
+      forwardTo:
+        pathRewrite: /
+        destinations:
+          - ref:
+              name: blue-green
+              namespace: websocket
+            port:
+              number: 5000
+    - name: blue-green-frontend
       matchers:
         - uri:
             prefix: /
       forwardTo:
         destinations:
           - ref:
-              name: tornado
-              namespace: apps
+              name: blue-green
+              namespace: websocket
             port:
-              number: 8888
+              number: 3000

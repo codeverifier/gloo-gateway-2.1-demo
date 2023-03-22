@@ -41,8 +41,9 @@ provision() {
         echo ""
 
         kubectl --context ${CLUSTER_CONTEXT} create ns websocket
-        kubectl --context ${CLUSTER_CONTEXT} label namespace websocket istio.io/rev=$REVISION
+        envsubst < <(cat $DIR/websockets/config.yaml) | kubectl --context ${CLUSTER_CONTEXT} -n websocket apply -f -
         kubectl --context ${CLUSTER_CONTEXT} -n websocket apply -f $DIR/websockets/deployment.yaml
+        kubectl --context ${CLUSTER_CONTEXT} -n websocket apply -f $DIR/websockets/service.yaml
     ;;
     *) echo "Unknown application" >&2; return 1
     ;;
@@ -63,7 +64,9 @@ delete() {
         kubectl --context ${CLUSTER_CONTEXT} -n toolbox delete -f $DIR/toolbox/deployment.yaml
     ;;
     websocket*)
+        kubectl --context ${CLUSTER_CONTEXT} -n websocket delete -f $DIR/websockets/config.yaml
         kubectl --context ${CLUSTER_CONTEXT} -n websocket delete -f $DIR/websockets/deployment.yaml
+        kubectl --context ${CLUSTER_CONTEXT} -n websocket delete -f $DIR/websockets/service.yaml
     ;;
     *) echo "Unknown application" >&2; return 1
     ;;

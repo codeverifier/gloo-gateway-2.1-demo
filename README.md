@@ -1,6 +1,6 @@
 # Gloo Gateway Demo - v2.1.x
 
-Demo of Gloo Gateway on Gloo Platform version `2.1.1` on a single cluster.
+Demo of Gloo Gateway on Gloo Platform version `2.1.1` in a single cluster.
 
 ## Prerequisites
 
@@ -70,6 +70,7 @@ List of applications to demonstrate the gateway features
 <u>Deployment</u>
 
 Deploy using,
+
 ```
 ./apps/apps-deploy.sh prov sockshop
 ```
@@ -90,6 +91,7 @@ List of features,
 <u>Deployment</u>
 
 Deploy using,
+
 ```
 ./apps/apps-deploy.sh prov websocket
 ```
